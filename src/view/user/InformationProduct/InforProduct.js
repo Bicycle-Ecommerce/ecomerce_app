@@ -4,19 +4,14 @@ import { numberToVND } from "../../../services/utils/common";
 import { ProductsCartContext } from "../store/products-cart-context";
 import React, { useContext, useEffect } from "react";
 import ProductDetailCard from "./ProductDetailCard";
-import { db } from "../../../services/firebase/firebase";
 // import SpecialOffers from "./SpecialOffers";
 // import Specifications from "./Specifications";
 
 const InforProduct = () => {
   let { state } = useLocation();
-  let location = useLocation();
   const { addToCart, items } = useContext(ProductsCartContext);
   useEffect(() => {
-    if (!state) {
-      console.log("state is undefined");
-      state = db.collection("products").doc(location.pathname.split("/")[2]);
-    }
+    console.log(state);
   }, []);
 
   const openNotification = (title, message) => {
