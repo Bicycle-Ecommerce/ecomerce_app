@@ -29,6 +29,11 @@ const ProductPage = () => {
     key: "all",
   });
 
+  const [selectedAscOrDesc, setSelectedAscOrDesc] = useState({
+    label: "Giá",
+    key: "default",
+  });
+
   const { state } = useLocation();
 
   useEffect(() => {
@@ -118,6 +123,33 @@ const ProductPage = () => {
     onClick: handleMenuClickForBrandSearching,
   };
 
+  const ascOrDescProps = {
+    items: [
+      {
+        label: "Giá tăng dần",
+        key: "asc",
+      },
+      {
+        label: "Giá giảm dần",
+        key: "desc",
+      },
+    ],
+    onClick: (e) => {
+      const selected = ascOrDescProps.items.find((item) => item.key === e.key);
+      if (selected) {
+        setSelectedAscOrDesc(selected);
+      }
+      if (selected.key === "asc") {
+        const sortedList = listProduct.sort((a, b) => a.price - b.price);
+        setListProduct([...sortedList]);
+      }
+      if (selected.key === "desc") {
+        const sortedList = listProduct.sort((a, b) => b.price - a.price);
+        setListProduct([...sortedList]);
+      }
+    },
+  };
+
   const sliderMarks = useMemo(
     () => ({
       [priceFilter[0]]: `${priceFilter[0]}triệu`,
@@ -147,6 +179,13 @@ const ProductPage = () => {
             <Button>
               <Space>
                 {selectedType.label} <DownOutlined />
+              </Space>
+            </Button>
+          </Dropdown>
+          <Dropdown menu={ascOrDescProps} className="mx-4">
+            <Button>
+              <Space>
+                {selectedAscOrDesc.label} <DownOutlined />
               </Space>
             </Button>
           </Dropdown>
