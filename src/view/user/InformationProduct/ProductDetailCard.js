@@ -85,14 +85,17 @@ const ProductDetailCard = ({ Images, DiscountPercentage }) => {
   const handleClick = (index) => {
     setCurrentImage(Images[index]);
   };
-
+  const BadgeHiddenOrNot = {
+    display: DiscountPercentage > 0 ? "block" : "none",
+  };
   return (
     <div className="flex flex-col w-full justify-between mx-5 my-5">
       <div className="max-w-sm m-2">
         <Badge.Ribbon
-          className="itemCardBadge"
-          text={`-${DiscountPercentage}%`}
+          className="p-2 px-3 text-md font-semibold"
+          text={`Giảm ${DiscountPercentage}%`}
           color="red"
+          style={BadgeHiddenOrNot}
         >
           <Image
             // preview={false}

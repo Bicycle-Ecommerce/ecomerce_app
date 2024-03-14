@@ -13,6 +13,7 @@ const InforProduct = () => {
     product: null,
     url: "",
   });
+
   let { pathname } = useLocation();
   useEffect(() => {
     let productId = pathname.split("/")[3];
