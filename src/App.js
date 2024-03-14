@@ -16,11 +16,8 @@ function App() {
         <PageContent/>
         <AppFooter/> */}
         <Routes>
-          {/* <Route path="/admin/*" element={<Admin />} /> */}
           <Route path="*" element={<UserPage />} />
-          {/* i want to redirect when endpoint error?  */}
         </Routes>
-        {/* <UserPage /> */}
       </Router>
     </div>
   );

@@ -1,18 +1,34 @@
 import { useLocation } from "react-router-dom";
-import { Button, notification } from "antd";
+import { Button, notification, Spin } from "antd";
 import { numberToVND } from "../../../services/utils/common";
 import { ProductsCartContext } from "../store/products-cart-context";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import ProductDetailCard from "./ProductDetailCard";
-// import SpecialOffers from "./SpecialOffers";
-// import Specifications from "./Specifications";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../services/firebase/firebase";
 
 const InforProduct = () => {
-  let { state } = useLocation();
   const { addToCart, items } = useContext(ProductsCartContext);
+  const [stateOfProduct, setStateOfProduct] = useState({
+    product: null,
+    url: "",
+  });
+  let { pathname } = useLocation();
   useEffect(() => {
-    console.log(state);
-  }, []);
+    let productId = pathname.split("/")[3];
+    const getProduct = async (productId) => {
+      const q = query(collection(db, "products"), where("id", "==", productId));
+      const querySnapShot = await getDocs(q);
+      const data = querySnapShot.docs.map((doc) => doc.data());
+      return data;
+    };
+    getProduct(productId).then((data) => {
+      setStateOfProduct({
+        product: data[0],
+        url: pathname.split("/")[2],
+      });
+    });
+  }, [pathname]);
 
   const openNotification = (title, message) => {
     notification.open({
@@ -23,59 +39,49 @@ const InforProduct = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addToCart(state.product, e.target[0].value, state.url);
+    addToCart(stateOfProduct.product, e.target[0].value, stateOfProduct.url);
     openNotification("Thông Báo", "Thêm vào giỏ hàng thành công");
     console.log(items);
   };
 
-  return (
+  return !stateOfProduct.product ? (
+    <Spin
+      style={{
+        display: "block",
+        margin: "0 auto",
+        padding: "70px 100px",
+      }}
+    />
+  ) : (
     <div className="">
       <div className="flex flex-col md:flex sm:flex-row">
         <div className="w-auto flex justify-center ">
           <ProductDetailCard
-            Images={state.product.thumbnail}
-            DiscountPercentage={state.product.discountPercentage}
+            Images={stateOfProduct?.product.thumbnail}
+            DiscountPercentage={stateOfProduct?.product.discountPercentage}
           />
         </div>
         <div className="w-full sm:w-1/3 flex flex-col bg-[#cfcfcf2b] p-4">
-          {/* <Typography.Paragraph>
-            <Typography.Title level={3}>{state.product.title}</Typography.Title>
-            <Typography.Text>Hãng: {state.product.brand}</Typography.Text>
-            <br />
-            <Typography.Text>
-              Giá: {numberToVND(state.product.price)}
-            </Typography.Text>
-          </Typography.Paragraph>
-          <Typography.Paragraph
-            ellipsis={{ rows: 3, expandable: false, symbol: "more" }}
-            style={{ width: "50%", display: "block" }}
-          >
-            Mô Tả: {state.product.description}
-          </Typography.Paragraph> */}
           <div className="">
             <div className="min-h-5 font-bold text-2xl text-[#262626] ">
-              <p className="font-mono">{state.product.title}</p>
+              <p className="font-mono">{stateOfProduct?.product.title}</p>
             </div>
-
             <p className="w-1/3 block text-2xl font-semibold overflow-visible ">
-              Hãng: {state.product.brand}
+              Hãng: {stateOfProduct?.product.brand}
             </p>
-            {state.product.discountPercentage > 0 && (
+            {stateOfProduct?.product.discountPercentage > 0 && (
               <p className="w-1/3 block font-semibold line-through text-gray-500 text-3xl md:text-2xl ">
                 {numberToVND(
-                  state.product.price +
-                    (state.product.price * state.product.discountPercentage) /
+                  stateOfProduct?.product.price +
+                    (stateOfProduct?.product.price *
+                      stateOfProduct?.product.discountPercentage) /
                       100
                 )}
               </p>
             )}
             <p className="w-1/3 block font-bold text-red-500 text-3xl md:text-2xl">
-              {numberToVND(state.product.price)}
-            </p>
-            {/* <p className="w-1/3 block text-center">
-              {state.product.description}
-            </p> */}
-            {/* <SpecialOffers /> */}
+              {numberToVND(stateOfProduct?.product.price)}
+            </p>{" "}
           </div>
           <form onSubmit={handleSubmit}>
             <div className="flex gap-1 items-center">
@@ -98,19 +104,6 @@ const InforProduct = () => {
           </form>
         </div>
       </div>
-      {/* <div className="flex flex-col justify-start">
-        <div className="">
-          <h2>Mô Tả Cơ Bản</h2>
-          <li>TWR</li>
-          <li>Twitter</li>
-          <li>Dep trai</li>
-          <li>Xe dap dua</li>
-        </div>
-        <div className="">
-          <h2>Thông Số Kĩ Thuật</h2>
-          <Specifications />
-        </div>
-      </div> */}
     </div>
   );
 };

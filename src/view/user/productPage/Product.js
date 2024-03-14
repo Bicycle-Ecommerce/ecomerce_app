@@ -8,7 +8,7 @@ const Product = ({ product, index, url }) => {
     <div className="max-w-sm m-2">
       <Link
         to={`/san-pham/${url}/${product.id}`}
-        state={{ product: product, url: url }}
+        state={product.id}
         style={{ textDecoration: "none" }}
       >
         <Badge.Ribbon
