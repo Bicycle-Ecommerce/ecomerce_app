@@ -1,9 +1,12 @@
 import React from "react";
-import { Badge, Card, Image, Typography } from "antd";
+import { Badge, Card, Image, Button } from "antd";
 import { numberToVND } from "../../../services/utils/common";
 import { Link } from "react-router-dom";
 
 const Product = ({ product, index, url }) => {
+  const BadgeHiddenOrNot = {
+    display: product.discountPercentage > 0 ? "block" : "none",
+  };
   return (
     <div className="max-w-sm m-2">
       <Link
@@ -12,9 +15,10 @@ const Product = ({ product, index, url }) => {
         style={{ textDecoration: "none" }}
       >
         <Badge.Ribbon
-          className="itemCardBadge"
-          text={`-${product.discountPercentage}%`}
+          className="p-2 px-3 text-md font-semibold"
+          text={`Giảm ${product.discountPercentage}%`}
           color="red"
+          style={BadgeHiddenOrNot}
         >
           <Card
             className="group block"
@@ -29,28 +33,28 @@ const Product = ({ product, index, url }) => {
           >
             <Card.Meta
               title={
-                <Typography.Paragraph>
+                <div className="text-center">
                   {/* i want to align size of this text when screen is small */}
                   <p>{product?.title}</p>
                   <br />
-                  {numberToVND(product.price)}{" "}
-                  {product.discountPercentage > 0 && (
-                    <Typography.Text delete type="danger">
-                      {numberToVND(
-                        product.price +
-                          (product.price * product.discountPercentage) / 100
-                      )}
-                    </Typography.Text>
-                  )}
-                </Typography.Paragraph>
+                  <div className="flex gap-2 justify-center">
+                    {product.discountPercentage > 0 && (
+                      <p className="font-normal self-center line-through">
+                        {numberToVND(
+                          product.price +
+                            (product.price * product.discountPercentage) / 100
+                        )}
+                      </p>
+                    )}
+                    <p className="text-red-500 text-2xl">
+                      {numberToVND(product.price)}
+                    </p>
+                  </div>
+                  <Button className="bg-primary text-white font-semibold hover:bg-blue-500 hover:text-dark-7">
+                    Xem chi tiết
+                  </Button>
+                </div>
               }
-              // description={
-              //   <Typography.Paragraph
-              //     ellipsis={{ rows: 2, expandable: false, symbol: "more" }}
-              //   >
-              //     {product.description}
-              //   </Typography.Paragraph>
-              // }
               style={{ height: "20%" }}
             ></Card.Meta>
           </Card>
