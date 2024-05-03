@@ -10,11 +10,7 @@ const app = initializeApp({
   // storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   // messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
   // appId: process.env.FIREBASE_APP_ID,
-  apiKey: "AIzaSyBVMldjskaps7wAg3JAuhlVHjqCvpRjKaE",
-  authDomain: "flower-shop-caa2e.firebaseapp.com",
-  projectId: "flower-shop-caa2e",
-  storageBucket: "flower-shop-caa2e.appspot.com",
-  messagingSenderId: "945577682273",
+
 });
 
 export const db = getFirestore();
